@@ -1,0 +1,20 @@
+import puts, fgets, stdin : pointer, atoi, qsort;
+
+var top4: i64[4];
+var buff: char[1024];
+var caloriesSum = 0;
+
+while(fgets(buff, sizeof(buff), stdin) != null) {
+    if(buff[0] == '\n') {
+        // lazy solution, simply have top 4, always replace the lowest and then sort
+        top4[0] = caloriesSum;
+        qsort(top4, sizeof(top4), sizeof(i64), (a: i64*, b: i64*) -> *a - *b);
+
+        caloriesSum = 0;
+    } else {
+        caloriesSum += atoi(buff);
+    }
+}
+
+puts("top1 = ${top4[3]}");
+puts("sum(top3) = ${top4[3] + top4[2] + top4[1]}");
