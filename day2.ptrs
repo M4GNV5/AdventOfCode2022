@@ -1,0 +1,37 @@
+import puts, fgets, stdin : pointer, atoi, qsort;
+
+var outcomes = map {
+    AX: 4, // draw + rock
+    BX: 1, // rock
+    CX: 7, // win + rock
+    AY: 8, // win + paper
+    BY: 5, // draw + paper
+    CY: 2, // paper
+    AZ: 3, // scissors
+    BZ: 9, // win + scissors
+    CZ: 6 // draw + scissors
+};
+var outcomes2 = map {
+    AX: 3, // scissors
+    BX: 1, // rock
+    CX: 2, // paper
+    AY: 4, // draw + rock
+    BY: 5, // draw + paper
+    CY: 6, // draw + scissors
+    AZ: 8, // win + paper
+    BZ: 9, // win + scissors
+    CZ: 7 // win + rock
+};
+
+var buff: char[1024];
+var sum = 0;
+var sum2 = 0;
+
+while(fgets(buff, sizeof(buff), stdin) != null) {
+    buff[1] = buff[2];
+    buff[2] = 0;
+    sum += outcomes[buff];
+    sum2 += outcomes2[buff];
+}
+
+puts("sum = $sum, sum2 = $sum2");
