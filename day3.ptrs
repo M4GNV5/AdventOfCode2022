@@ -1,0 +1,49 @@
+import puts, fgets, stdin : pointer, atoi, qsort, strlen, strcpy, isupper, toupper;
+
+var buff: char[1024];
+var buff2: char[1024];
+var buff3: char[1024];
+var sum = 0;
+
+var k = 0;
+buff2[0] = 0;
+buff3[0] = 0;
+var sum2 = 0;
+
+while(fgets(buff, sizeof(buff), stdin) != null) {
+    var len = strlen(buff);
+    var found = false;
+    for(var i = 0; !found && i < len / 2; i++) {
+        for(var j = len / 2; !found && j < len; j++) {
+            if(buff[i] == buff[j]) {
+                var val = toupper(buff[i]) - 'A' + 1 + (isupper(buff[i]) ? 26 : 0);
+                sum += val;
+                found = true;
+            }
+        }
+    }
+
+    k++;
+    if(k % 3 == 0 && k != 0) {
+        var len2 = strlen(buff2);
+        var len3 = strlen(buff3);
+        found = false;
+        for(var i = 0; !found && i < len; i++) {
+            for(var j = 0; !found && j < len2; j++) {
+                if(buff[i] == buff2[j]) {
+                    for(var n = 0; !found && n < len3; n++) {
+                        if(buff[i] == buff3[n]) {
+                            sum2 += toupper(buff[i]) - 'A' + 1 + (isupper(buff[i]) ? 26 : 0);
+                            found = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    strcpy(buff3, buff2);
+    strcpy(buff2, buff);
+}
+
+puts("sum = $sum, sum2 = $sum2");
