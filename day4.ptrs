@@ -1,0 +1,37 @@
+import puts, fgets, stdin : pointer, atoi, strchr;
+
+var buff: char[1024];
+var count = 0;
+var count2 = 0;
+
+while(fgets(buff, sizeof(buff), stdin) != null)
+{
+    var stop1 = strchr(buff, '-') + 1;
+    var start2 = strchr(stop1, ',') + 1;
+    var stop2 = strchr(start2, '-') + 1;
+
+    if(stop1 == 1 || start2 == 1 || stop2 == 1)
+    {
+        puts("Ignoring invalid line: $buff");
+        continue;
+    }
+
+    var start1 = atoi(buff);
+    stop1 = atoi(stop1);
+    start2 = atoi(start2);
+    stop2 = atoi(stop2);
+
+    if((start1 >= start2 && stop1 <= stop2)
+        || (start2 >= start1 && stop2 <= stop1))
+    {
+        count++;
+    }
+
+    if((start1 <= start2 && stop1 >= start2)
+        || (start2 <= start1 && stop2 >= start1))
+    {
+        count2++;
+    }
+}
+
+puts("count = $count, count2 = $count2");
