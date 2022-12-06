@@ -1,0 +1,95 @@
+import puts, printf, fgets, stdin : pointer, atoi, strstr, strlen, memcpy, memset;
+
+const STACK_COUNT = 9;
+const STACK_SIZE = 8;
+//const STACK_COUNT = 3;
+//const STACK_SIZE = 3;
+
+var buff: char[1024];
+var stacks: var[STACK_COUNT];
+
+function dumpStacks()
+{
+    for(var i = 0; i < STACK_COUNT; i++)
+    {
+        puts("stacks[$i] = ${stacks[i]}");
+    }
+}
+
+function getNumAfter(buff: char*, after: char*)
+{
+    var len = strlen(after);
+    var start = strstr(buff, after);
+
+    if(start == null)
+        throw "Could not find $after in string $buff";
+
+    return atoi(start + len);
+}
+
+function moveItem(from: int, to: int)
+{
+    var fromS = stacks[from];
+    var toS = stacks[to];
+
+    var i = strlen(fromS) - 1;
+    var j = strlen(toS);
+
+    if(i < 0)
+        throw "Cannot move from empty stack";
+
+    toS[j] = fromS[i];
+    fromS[i] = 0;
+}
+
+function moveMultiple(from: int, to: int, amount: int)
+{
+    var fromS = stacks[from];
+    var toS = stacks[to];
+
+    var i = strlen(fromS) - amount;
+    var j = strlen(toS);
+    puts("move $amount from $fromS to $toS, offsets $i and $j");
+
+    if(i < 0)
+        throw "Cannot move from empty stack";
+    if(j + amount >= STACK_COUNT * STACK_SIZE)
+        throw "Cannot move to full stack";
+
+    memcpy(toS + j, fromS + i, amount);
+    memset(fromS + i, 0, amount);
+}
+
+for(var i = 0; i < STACK_COUNT; i++)
+    stacks[i] = new char[STACK_COUNT * STACK_SIZE];
+
+for(var i = STACK_SIZE - 1; i >= 0; i--)
+{
+    fgets(buff, sizeof(buff), stdin);
+
+    for(var j = 0; j < STACK_COUNT; j++)
+    {
+        if(buff[j * 4 + 1] == ' ')
+            stacks[j][i] = 0;
+        else
+            stacks[j][i] = buff[j * 4 + 1];
+    }
+}
+
+fgets(buff, sizeof(buff), stdin); // skip nums
+fgets(buff, sizeof(buff), stdin); // skip empty line
+
+while(fgets(buff, sizeof(buff), stdin) != null) {
+    dumpStacks();
+
+    var amount = getNumAfter(buff, "move ");
+    var from = getNumAfter(buff, "from ") - 1;
+    var to = getNumAfter(buff, "to ") - 1;
+
+    puts("moving $amount items from $from to $to");
+    moveMultiple(from, to, amount);
+    //for(var i = 0; i < amount; i++)
+    //    moveItem(from, to);
+}
+
+dumpStacks();
