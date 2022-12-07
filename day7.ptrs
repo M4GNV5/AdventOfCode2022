@@ -1,0 +1,72 @@
+import puts, fgets, stdin : pointer, atoi, strrchr, strcmp, strncmp;
+
+// run the program twice, once for calculating the TOTAL_FREE_SPACE
+// then after setting the value below again to calculate the best option
+const TOTAL_FREE_SPACE = 22557601;
+const TOTAL_REQUIRED_SPACE = 30000000;
+var buff: char[1024];
+var sizes: u64[128] = [0];
+var i = 0;
+var sum = 0;
+var bestOption = TOTAL_REQUIRED_SPACE;
+
+
+function cdDotDot()
+{
+    if(i < 0)
+        throw "Cannot go beyond the top level!";
+
+    if(sizes[i] <= 100000)
+        sum += sizes[i];
+
+    if(sizes[i] + TOTAL_FREE_SPACE >= TOTAL_REQUIRED_SPACE
+        && sizes[i] < bestOption)
+    {
+        bestOption = sizes[i];
+    }
+
+    if(i > 0)
+        sizes[i - 1] += sizes[i];
+    sizes[i] = 0;
+    i--;
+}
+
+while(fgets(buff, sizeof(buff), stdin) != null) {
+    var end = strrchr!char*(buff, '\n');
+    if(end != null)
+        *end = 0;
+
+    if(strncmp(buff, "\$ cd ", 5) == 0)
+    {
+        var path = buff[5 .. $];
+        if(strcmp(path, "..") == 0)
+        {
+            cdDotDot();
+        }
+        else if(strcmp(path, "/") == 0)
+        {
+            while(i > 0)
+                cdDotDot();
+        }
+        else
+        {
+            i++;
+            sizes[i] = 0;
+        }
+    }
+    else if(strncmp(buff, "dir ", 4) != 0)
+    {
+        var size = atoi(buff);
+        sizes[i] += size;
+    }
+}
+
+while(i > 0)
+    cdDotDot();
+puts("total free space: ${70000000 - sizes[0]}");
+
+// go out of / directory, to check if is the best option
+cdDotDot();
+
+puts("best option for deletion has size $bestOption");
+puts("sum of directories with size >=100000: $sum");
